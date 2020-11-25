@@ -1,0 +1,48 @@
+Add-Migration InitialCreate
+Update-Database
+上面这两个命令必须是web的context，否则无效。
+
+
+客户巴对应客户和案件权限：
+SELECT KeHuTeam,* FROM dbo.C_Customer WHERE  C_Customer_isDelete=0 AND C_Customer_businessType<>82
+AND 
+EXISTS(SELECT 1 FROM dbo.C_Organization_post_user_region
+ WHERE C_Organization_post_user_region_isDelete=0  
+AND C_Customer_RegionCode=C_region_code 
+--AND C_User_code=@UserCode 
+) 
+客户-客户客户巴字段-组织架构-对应组织架构 客户巴以及下所有人可见
+案件-案件客户巴字段-组织架构-对应组织架构 客户巴下所有人可见
+存在问题： 客户的客户巴 和 案件的客户巴不一致，不管，公布出去。如果找不到客户或者案件，有两种情况：
+1.配置权限，是否在该组织下；
+2.调整客户、案件的客户巴所属；
+实施巴：
+同上
+管理支援仅按区域划分，提交级别是1.NPC部门逻辑在【预算表生成逻辑】描述
+
+客户和案件预算提交级别0，在预算表提交级别字段里设置，为筛选提供便捷条件。
+
+巴长汇总预算提交展示权限：
+1.找到巴长。巴长才能提交。
+2.提交级别1，按区域即可回溯。
+
+大区总裁汇总预算提交展示权限：
+1.大区总裁提交级别为2，按区域即可。
+2.审批人按主岗审批。
+
+
+认领和分配：
+开拓巴将客户分配给客户律师或客户组长，客户组长可分配或自己填写，仅限开拓巴和客户巴
+
+预算表生成逻辑：
+1.预算生成所有科目数据，比如科目有81条，就生成81条十二个月份的预算数据。
+2.提交之前实时展示汇总数据。以下有测试结果，也可缓存在MongoDB或者Redis中，提交之后
+3.科目计算和显示仅和提交人提交级别，仅对以下内容产生影响：
+
+
+汇总之前可使用视图，测试百万级数据汇总12月份，显示0:0:0。
+对于列表上需要展示的数据，可使用SQL server独有函数行转列 列转行 Poivt，非常方便。
+
+
+
+
